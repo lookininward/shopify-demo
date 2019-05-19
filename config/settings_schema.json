@@ -918,5 +918,64 @@
         }
       }
     ]
+  },
+  {
+    "name": {
+      "en": "Donation"
+    },
+    "settings": [
+      {
+         "type": "radio",
+         "id": "donate_enabled",
+         "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+         ],
+         "label": "Add option to donate to an organization of your choice"
+      },
+      {
+        "type": "header",
+        "content": {
+          "en": "Settings"
+        }
+      },
+      {
+        "type": "text",
+        "id": "donate_organization",
+        "label": {
+          "en": "Organization"
+        },
+        "info": {
+          "en": "e.g. St. Michael's Hospital"
+        }
+      },
+
+      {
+        "type": "range",
+        "id": "donate_percentage",
+        "label": {
+          "en": "Percentage of Purchase Price"
+        },
+        "default": 5,
+        "min": 0,
+        "max": 100
+      }
+    ]
+  },
+  {
+    "name": {
+      "en": "Custom Engraving"
+    },
+    "settings": [
+      {
+         "type": "radio",
+         "id": "engraving_enabled",
+         "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+         ],
+        "label": "Add option to engrave custom text on product"
+      }
+    ]
   }
 ]
