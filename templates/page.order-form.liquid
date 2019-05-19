@@ -16,85 +16,168 @@ Customized by: Michael X
 
 {% paginate collection.products by 100 %}
 
-<form action="/cart" method="post">
+<div
+  class="container"
+  style="
+    padding: 0 20px;
+  "
+>
 
-  <!-- Page Content / Collection Description -->
-  {% if template contains 'page' and page.content.size > 0 %}
-    <div class="rte">
-      {{ page.content }}
-    </div>
-  {% elsif collection.description.size > 0 %}
-    <div class="rte">
-      {{ collection.description }}
-    </div>
-  {% endif %}
+  <form action="/cart" method="post">
 
-  <!-- Product Table -->
-  {% if collection.products_count > 0 %}
-    <table class="custom-order-form">
-      <thead>
-        <th>Preview</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Quantity</th>
-        <th>Engraving</th>
-      </thead>
-      <tbody>
-      {% for product in collection.products %}
-        {% if product.available %}
-          {% for variant in product.variants %}
-            {% if variant.available %}
-              <tr class="{% cycle 'pure-table-odd', '' %}">
-                <td>
-                  <a href="{{ variant.url | collection }}">
-                    <img src="{{ variant.image | default: product.featured_image | img_url: 'small' }}" alt="{{ variant.title | escape }}" />
-                  </a>
-                </td>
-                <td>
-                  <a href="{{ variant.url | collection }}">
-                   {{ product.title }}{% unless variant.title contains 'Default' %} - {{ variant.title }}{% endunless %}{% unless variant.sku == blank %} - {{ variant.sku }}{% endunless %}
-                  </a>
-                </td>
-                <td>
-                   {{ variant.price | money }}
-                </td>
-                <td style="text-align:right;">
-                  <input name="updates[{{ variant.id }}]" onfocus="this.select()" class="quantity field" min="0" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="0" tabindex="1" />
-                </td>
+    <!-- Page Content / Collection Description -->
+    {% if template contains 'page' and page.content.size > 0 %}
+      <div class="rte">
+        {{ page.content }}
+      </div>
+    {% elsif collection.description.size > 0 %}
+      <div class="rte">
+        {{ collection.description }}
+      </div>
+    {% endif %}
 
-                <td>
+    <!-- Product Table -->
+    {% if collection.products_count > 0 %}
+      <table class="custom-order-form">
+        <thead>
+          <tr
+            style="
+              display: grid;
+              grid-template-columns: 100px 1fr 100px 200px 1fr 100px;
+              grid-template-rows: 1fr;
+            "
+          >
+            <th>Preview</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Engraving</th>
+            <th class="product-header-donate">Donate</th>
+            <th class="product-header-quantity">Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for product in collection.products %}
+          {% if product.available %}
+            {% for variant in product.variants %}
+              {% if variant.available %}
+                <tr
+                  class="{% cycle 'pure-table-odd', '' %}"
+                  style="
+                    display: grid;
+                    grid-template-columns: 100px 1fr 100px 200px 1fr 100px;
+                    grid-template-rows: 1fr;
+                  "
+                >
+                  <td class="product-preview">
+                    <a href="{{ variant.url | collection }}">
+                      <img src="{{ variant.image | default: product.featured_image | img_url: 'small' }}" alt="{{ variant.title | escape }}" />
+                    </a>
+                  </td>
+                  <td class="product-title">
+                    <a href="{{ variant.url | collection }}">
+                     {{ product.title }}{% unless variant.title contains 'Default' %} - {{ variant.title }}{% endunless %}{% unless variant.sku == blank %} - {{ variant.sku }}{% endunless %}
+                    </a>
+                  </td>
+                  <td class="product-price">
+                     {{ variant.price | money }}
+                  </td>
+
+                  <!-- Custom Engraving (optional) -->
                   {% if settings.engraving_enabled == 'yes' %}
-                    <p class="line-item-property__field">
-                      <input id="custom-engraving" type="text" name="properties[Custom Engraving]">
+                  <td class="product-engraving">
+                    <p
+                      class="line-item-property__field"
+                      style="width: 100%;"
+                    >
+                      <input
+                        id="custom-engraving"
+                        type="text"
+                        name="properties[Custom Engraving]"
+                        style="padding: 10px; width: 100%;"
+                      >
                     </p>
+                  </td>
                   {% endif %}
-                </td>
-              </tr>
-            {% endif %}
-          {% endfor %}
-        {% endif %}
-      {% endfor %}
-      </tbody>
-    </table>
 
-    <!-- Actions -->
-    <div
-      style="
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        padding: 20px;
-      "
-    >
-      <input type="submit" value="Add to the cart" />
-    </div>
+                  <!-- Donate To SickKids (required) -->
+                  {% if settings.donate_enabled == 'yes' %}
+                  <td class="product-donate">
+                    <p
+                      class="line-item-property__field"
+                      style="margin: 0;"
+                    >
+                      <label
+                        style="
+                          display: flex;
+                          flex-direction: row;
+                          align-items: center;
+                        "
+                      >
+                        {{ settings.donate_organization}}
+                        ({{ settings.donate_percentage}}%)
+                      </label>
 
-  {% else %}
-    <p>There are no products in this view.</p>
-  {% endif %}
+                      <div
+                        style="
+                          display: flex;
+                        "
+                      >
+                        <label class="custom-input-group" style="margin-right: 10px;">
+                          <input
+                            required
+                            class="required"
+                            type="radio"
+                            name="properties[Donate]"
+                            value="yes"
+                          >
+                          <span>Yes</span>
+                        </label>
+                        <label class="custom-input-group">
+                          <input
+                            required
+                            class="required"
+                            type="radio"
+                            name="properties[Donate]"
+                            value="no"
+                          >
+                          <span>No</span>
+                        </label>
+                      </div>
+                    </p>
+                  </td>
+                  {% endif %}
 
-</form>
+                  <td class="product-quantity">
+                    <input name="updates[{{ variant.id }}]" onfocus="this.select()" class="quantity field" min="0" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="0" tabindex="1" />
+                  </td>
 
+                </tr>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Actions -->
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          padding: 20px;
+        "
+      >
+        <input type="submit" value="Add to the cart" />
+      </div>
+
+    {% else %}
+      <p>There are no products in this view.</p>
+    {% endif %}
+
+  </form>
+
+</div>
 {% endpaginate %}
 
 {% if collection.products_count > 0 %}

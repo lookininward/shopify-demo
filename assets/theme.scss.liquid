@@ -7369,13 +7369,66 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
 }
 
 .custom-order-form {
-  
+
+  thead tr {
+    border-top: 1px solid #e8e9eb;
+    border-bottom: 1px solid #e8e9eb;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #e8e9eb;
+
+    &:hover{
+      background-color: #e8e9eb;
+    }
+  }
+
+  th, td, a {
+    border: none;
+  }
+
+  tr {
+    padding: 10px 0;
+  }
+
   th {
+    text-align: left;
+    padding: 0 10px;
+  }
+
+  td {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0 10px;
+  }
+
+  //-- Header Cells -----------------------------
+  .product-header-quantity {
     text-align: center;
   }
 
-  th, td {
-    padding: 0;
+  //-- Body Cells -------------------------------
+  .product-preview {}
+  .product-title {}
+  .product-price {}
+
+  .product-engraving {
+    input {
+      max-width: 300px;
+      padding: 0;
+      text-align: left;
+    }
+  }
+
+  .product-quantity {
+    align-items: center;
+    input {
+      max-width: 50px;
+      padding: 0;
+      text-align: center;
+    }
   }
 
 }
