@@ -3,63 +3,54 @@ Source: https://gist.github.com/carolineschnapp/9122054
 Customized by: Michael X
 {% endcomment %}
 
-<!-- Header -->
-<header class="collection-header">
-  <div class="page-width">
-    <div class="section-header text-center">
-      <h1>Bulk Order Form</h1>
+<!-- Vue -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+
+<div id="app" class="vue-form">
+
+  <!-- Form Header ----------------------------------------------------------->
+  <header class="collection-header">
+    <div class="page-width">
+      <div class="section-header text-center">
+        <h1>${header}</h1>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
 
-{% assign collection = collections.all %}
 
-{% paginate collection.products by 100 %}
+<!-- <form action="/cart" method="post"> -->
+<form method="POST" onsubmit="submitForm()">
 
-<div
-  class="container"
-  style="
-    padding: 0 20px;
-  "
->
+  <template v-if="testProducts.length > 0">
 
-  <form action="/cart" method="post">
+    <!-- Product Table --------------------------------------------------------->
+    <table class="custom-order-form">
 
-    <!-- Page Content / Collection Description -->
-    {% if template contains 'page' and page.content.size > 0 %}
-      <div class="rte">
-        {{ page.content }}
-      </div>
-    {% elsif collection.description.size > 0 %}
-      <div class="rte">
-        {{ collection.description }}
-      </div>
-    {% endif %}
+      <!-- Table Headers ------------------------------------------------------->
+      <thead>
+        <tr
+          style="
+            display: grid;
+            grid-template-columns: 100px 1fr 100px 200px 1fr 100px;
+            grid-template-rows: 1fr;
+          "
+        >
+          <th>Preview</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Engraving</th>
+          <th class="product-header-donate">Donate</th>
+          <th class="product-header-quantity">Quantity</th>
+        </tr>
+      </thead>
 
-    <!-- Product Table -->
-    {% if collection.products_count > 0 %}
-      <table class="custom-order-form">
-        <thead>
-          <tr
-            style="
-              display: grid;
-              grid-template-columns: 100px 1fr 100px 200px 1fr 100px;
-              grid-template-rows: 1fr;
-            "
-          >
-            <th>Preview</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Engraving</th>
-            <th class="product-header-donate">Donate</th>
-            <th class="product-header-quantity">Quantity</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for product in collection.products %}
-          {% if product.available %}
-            {% for variant in product.variants %}
-              {% if variant.available %}
+      <!-- Body ---------------------------------------------------------------->
+      <tbody>
+        <template v-for="product in testProducts">
+
+          <template v-if="product.available">
+            <template v-for="variant in product.variants">
+              <template v-if="variant.available">
                 <tr
                   class="{% cycle 'pure-table-odd', '' %}"
                   style="
@@ -68,21 +59,36 @@ Customized by: Michael X
                     grid-template-rows: 1fr;
                   "
                 >
+
+                  <!-- Preview Image ------------------------------------------->
                   <td class="product-preview">
-                    <a href="{{ variant.url | collection }}">
-                      <img src="{{ variant.image | default: product.featured_image | img_url: 'small' }}" alt="{{ variant.title | escape }}" />
-                    </a>
-                  </td>
-                  <td class="product-title">
-                    <a href="{{ variant.url | collection }}">
-                     {{ product.title }}{% unless variant.title contains 'Default' %} - {{ variant.title }}{% endunless %}{% unless variant.sku == blank %} - {{ variant.sku }}{% endunless %}
-                    </a>
-                  </td>
-                  <td class="product-price">
-                     {{ variant.price | money }}
+                    <img
+                      :src="product.featured_image"
+                      @click="goToProduct(variant.url)"
+                    />
                   </td>
 
-                  <!-- Custom Engraving (optional) -->
+                  <!-- Title --------------------------------------------------->
+                  <td
+                    class="product-title"
+                    @click="goToProduct(variant.url)"
+                  >
+                     ${product.title}
+                    <template v-if="!variant.title.includes('Default')">
+                      - ${variant.title}
+                    </template>
+                    <template v-if="variant.sku">
+                      - ${variant.sku}
+                    </template>
+                  </td>
+
+                  <!-- Price --------------------------------------------------->
+                  <td class="product-price">
+                     ${variant.price}
+                  </td>
+
+
+                  <!-- Custom Engraving (optional) ----------------------------->
                   {% if settings.engraving_enabled == 'yes' %}
                   <td class="product-engraving">
                     <p
@@ -92,14 +98,14 @@ Customized by: Michael X
                       <input
                         id="custom-engraving"
                         type="text"
-                        name="properties[Custom Engraving]"
+                        :name="variant.engravingName"
                         style="padding: 10px; width: 100%;"
                       >
                     </p>
                   </td>
                   {% endif %}
 
-                  <!-- Donate To SickKids (required) -->
+                  <!-- Donate To SickKids (required) --------------------------->
                   {% if settings.donate_enabled == 'yes' %}
                   <td class="product-donate">
                     <p
@@ -124,20 +130,19 @@ Customized by: Michael X
                       >
                         <label class="custom-input-group" style="margin-right: 10px;">
                           <input
-                            required
+                            
                             class="required"
                             type="radio"
-                            name="properties[Donate]"
+                            :name="variant.donateName"
                             value="yes"
                           >
                           <span>Yes</span>
                         </label>
                         <label class="custom-input-group">
                           <input
-                            required
                             class="required"
                             type="radio"
-                            name="properties[Donate]"
+                            :name="variant.donateName"
                             value="no"
                           >
                           <span>No</span>
@@ -148,37 +153,270 @@ Customized by: Michael X
                   {% endif %}
 
                   <td class="product-quantity">
-                    <input name="updates[{{ variant.id }}]" onfocus="this.select()" class="quantity field" min="0" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="0" tabindex="1" />
+
+                    <!-- :name="variant.quantityName" -->
+                    <!-- onfocus="this.select()" -->
+                    <!-- class="quantity field" -->
+
+                    <!-- ${variant.id} -->
+
+                    {% capture my_variable %}
+                      form["${variant.id}"].quantity
+                    {% endcapture %}
+
+                    <input
+                      name="updates[{{ variant.id }}]"
+                      {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %}
+                        max="{{ variant.inventory_quantity }}"
+                      {% endunless %}
+                      type="number"
+                      tabindex="1"
+                    />
                   </td>
 
+
+
                 </tr>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-        {% endfor %}
-        </tbody>
-      </table>
+              </template>
+            </template>
+          </template>
 
-      <!-- Actions -->
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          justify-content: flex-end;
-          padding: 20px;
-        "
+
+          <!-- <div>${product.available}</div>
+          <div>${product.name}</div>
+          <div>${product.variants}</div> -->
+        </template>
+      </tbody>
+
+    </table>
+
+    <!-- Actions --------------------------------------------------------------->
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 20px;
+      "
+    >
+      <input
+        type="submit"
       >
-        <input type="submit" value="Add to the cart" />
-      </div>
+        Add To Cart
+      </input>
+    </div>
 
-    {% else %}
-      <p>There are no products in this view.</p>
-    {% endif %}
 
-  </form>
+  </template>
+
+  <template v-else>
+    <p>There are no products in this view.</p>
+  </template>
+
+</form>
+
+
+
+
+
+
+</div>
+
+{% assign collection = collections.all %}
+
+{% paginate collection.products by 100 %}
 
 </div>
 {% endpaginate %}
+
+<!-- Vue --------------------------------------->
+<script>
+
+  var myProducts = []
+
+  {% for product in collection.products %}
+    var object = {}
+    object.id = "{{ product.id }}"
+    object.available = "{{ product.available }}"
+    object.featured_image =  "//cdn.shopify.com/s/files/1/0063/1770/3239/" + "{{ product.featured_image }}"
+    object.variants = []
+    object.title = "{{ product.title }}"
+    myProducts.push(object)
+
+    {% for variant in product.variants %}
+
+      var variantObject = {}
+      variantObject.id = "{{ variant.id }}"
+      variantObject.available = "{{ variant.available }}"
+      variantObject.url =  "//cdn.shopify.com/s/files/1/0063/1770/3239/" + "{{ variant.url }}"
+      variantObject.featured_image = "{{ variant.featured_image }}"
+      variantObject.title = "{{ variant.title }}"
+      variantObject.sku = "{{ variant.sku }}"
+      variantObject.price = "{{ variant.price | money}}"
+
+      variantObject.engravingName = 'properties' + '[Custom Engraving]' + "[{{variant.id}}]"
+      
+      variantObject.donateName = 'properties' + "[{{variant.id}}]" + '[Donate]'
+
+      variantObject.quantityName = 'updates' + "[{{variant.id}}]"
+      object.variants.push(variantObject)
+
+
+
+
+      // properties %5B17141988589639 %5D %5B Custom+Engraving %5D: 
+      // updates %5B17141988589639 %5D: 4
+
+    {% endfor %}
+
+  {% endfor %}
+
+  var form = new Vue({
+    delimiters: ['${', '}'],
+    el: '#app',
+
+    data() {
+      return {
+        header: 'Bulk Order Form',
+        testProducts: myProducts,
+
+
+        // build form from testProducts array
+        // form: [
+        //   {
+        //     quantity: 3
+        //     // id: "17141988720711"
+        //   }
+        //   // "17141988720711"
+        // ],
+
+        form: {
+          "17141988720711": {
+            quantity: 99
+          }
+        }
+
+
+        // {
+        //   "17141988720711" : {
+        //     quantity: 0
+        //   }
+        // }
+        
+
+        // form: [5]
+
+        // quantityTest: 5
+      }
+    },
+    methods: {
+      goToProduct(url) {
+
+        let base = 'https://devs-beyond-borders.myshopify.com'
+        window.location.href = base + url
+
+      },
+
+      // submitForm() {
+      //   console.log('submitting...')
+      // },
+
+
+
+      submitForm(formData) {
+        alert('fuasdfasdf')
+        console.log('submitting...')
+        console.log(formData)
+
+        let url = '/cart/add.js'
+
+        // gather form data
+
+        // create request payloads
+        let data = {
+          id: 17141988720711,
+          quantity: 7
+        }
+
+        // POST payloads 
+
+
+        // Default options are marked with *
+        // return fetch(url, {
+        //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        //     mode: 'cors', // no-cors, cors, *same-origin
+        //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        //     credentials: 'same-origin', // include, *same-origin, omit
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         // 'Content-Type': 'application/x-www-form-urlencoded',
+        //     },
+        //     redirect: 'follow', // manual, *follow, error
+        //     referrer: 'no-referrer', // no-referrer, *client
+        //     body: JSON.stringify(data), // body data type must match "Content-Type" header
+        // })
+        // .then(response => {
+        //   // response.json()
+        //   // console.log(response.json())
+        // }); // parses JSON response into native Javascript objects 
+      }
+
+
+
+
+    }
+
+
+  })
+
+
+  var testComponent = new Vue({
+    delimiters: ['${', '}'],
+    name: 'msg',
+
+    data() {
+      return {
+        msg: 'monkey message'
+      }
+    },
+
+
+  })
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 {% if collection.products_count > 0 %}
   <script>
