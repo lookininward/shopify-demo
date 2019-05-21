@@ -170,7 +170,11 @@ This order form is a vue component that:
       </table>
 
       <!-- Actions ----------------------------------------------------------->
-      <div class="form-actions">
+      <div
+        class="form-actions"
+        :class="error ? 'has-error' : '' "
+      >
+        <div v-if="error" class="error">${ error }</div>
         <button
           type="submit"
           class="btn product-form__cart-submit btn--secondary-accent"
@@ -215,7 +219,7 @@ This order form is a vue component that:
       // internal properties
       variantObj.id = "{{ variant.id }}"
       variantObj.available = "{{ variant.available }}"
-      variantObj.url =  "//cdn.shopify.com/s/files/1/0063/1770/3239/" + "{{ variant.url }}"
+      variantObj.url = "{{ variant.url }}"
       variantObj.featured_image = "{{ variant.featured_image }}"
       variantObj.title = "{{ variant.title }}"
       variantObj.sku = "{{ variant.sku }}"
@@ -233,6 +237,9 @@ This order form is a vue component that:
 
   {% endfor %}
 
+  // set base url for shop
+  const shopURL = "{{ shop.url }}"
+
   //-- Form -------------------------------------
   var form = new Vue({
     delimiters: ['${', '}'],
@@ -243,18 +250,25 @@ This order form is a vue component that:
         allProducts: allProducts,
         allVariants: allVariants,
         payloads: [],
-        isAddingToCart: false
+        isAddingToCart: false,
+        shopURL: shopURL,
+        error: null
       }
     },
 
     methods: {
 
       goToProduct(url) {
-        let base = 'https://devs-beyond-borders.myshopify.com'
-        window.location.href = base + url
+        window.location.href = this.shopURL + url
       },
 
       submitForm() {
+
+        if(!this._validateForm()) {
+          this.error = 'Please select at least one item'
+          console.log('error')
+          return
+        }
 
         // gather form data
         const allVariants = this.allVariants
@@ -275,10 +289,28 @@ This order form is a vue component that:
 
         // start request chain
         this.isAddingToCart = true
+        document.body.scrollTop = 0; // Safari
+        document.documentElement.scrollTop = 0; // Chrome, FF, IE, Opera
         this._addItem(payloads[0])
       },
 
       //-- Internal -----------------------------
+
+      _validateForm() {
+        const allVariants = this.allVariants
+
+        // validate quantity
+        let hasSelectedQuantity = []
+
+        allVariants.forEach(variant => {
+          if (parseInt(variant.quantityInput) > 0) {
+            hasSelectedQuantity.push('ok')
+          }
+        })
+
+        return hasSelectedQuantity.length >= 1
+      },
+
       _addItem(payload) {
         fetch('/cart/add.js', {
           method: 'POST',
@@ -293,9 +325,8 @@ This order form is a vue component that:
         if (payloads.length) { // requests in queue, process next request
           const request = payloads.shift();
           this._addItem(request);
-        } else { // queue empty, redirect to cart
-          const url = 'https://devs-beyond-borders.myshopify.com/cart'
-          document.location.href = url
+        } else { // queue empty, redirect to checkout
+          window.location.href = "/checkout";
         }
       }
 

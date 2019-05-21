@@ -7458,13 +7458,27 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
     }
   }
 
-  .form-action {
+  .form-actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     padding: 20px;
+
+    &.has-error {
+      justify-content: space-between;  
+    }
   }
 
+  // overrides
+  .product-form__cart-submit {
+    width: auto;
+    padding: 10px  15px;
+  }
+
+}
+
+.error {
+  color: red;
 }
 
 //-- Loading States -----------------------------

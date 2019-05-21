@@ -33,6 +33,13 @@ The order form allows customers to:
 * select options (with line item properties), quantity for each product
 * on click to go directly to checkout
 
+The order form is a vue component that:
+* grabs collection data and converts it to arrays of product/variant objs
+* these objs hold all display and input data
+* upon submit these objs are used to construct payloads
+* payloads are queued up and executed synchonously (variant requirement)
+* loading state, then redirected to the cart once the queue is empty
+
 *Learn More*:
 * [Add an order form to your store](https://help.shopify.com/en/themes/customization/forms/add-order-form)
 * [Add, remove, or edit menu items in your online store](https://help.shopify.com/en/manual/sell-online/online-store/menus-and-links/editing-menus)
