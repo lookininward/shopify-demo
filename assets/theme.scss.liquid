@@ -7359,6 +7359,12 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
 }
 
 //-- Custom Styles ------------------------------------------------------------
+#app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
 .custom-input-group {
   cursor: pointer;
@@ -7369,6 +7375,7 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
 }
 
 .custom-order-form {
+  max-width: 1000px;
 
   thead tr {
     display: grid;
@@ -7416,9 +7423,10 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
   }
 
   //-- Body Cells -------------------------------
-  .product-preview {}
-  .product-title {}
-  .product-price {}
+  .product-preview,
+  .product-title {
+    cursor: pointer;
+  }
 
   .product-engraving {
     input {
