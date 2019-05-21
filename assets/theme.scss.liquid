@@ -7371,11 +7371,17 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
 .custom-order-form {
 
   thead tr {
+    display: grid;
+    grid-template-columns: 100px 1fr 100px 200px 1fr 100px;
+    grid-template-rows: 1fr;
     border-top: 1px solid #e8e9eb;
     border-bottom: 1px solid #e8e9eb;
   }
 
   tbody tr {
+    display: grid;
+    grid-template-columns: 100px 1fr 100px 200px 1fr 100px;
+    grid-template-rows: 1fr;
     border-bottom: 1px solid #e8e9eb;
 
     &:hover{
