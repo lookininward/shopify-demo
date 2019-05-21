@@ -19,14 +19,17 @@ Customized by: Michael X
 
 
 <!-- <form action="/cart" method="post"> -->
-<form method="POST" onsubmit="submitForm()">
+<form
+  id="orderForm"
+  ref="orderForm"
+  method="POST" v-on:submit.prevent="submitForm">
 
   <template v-if="testProducts.length > 0">
 
-    <!-- Product Table --------------------------------------------------------->
+    <!-- Product Table ------------------------------------------------------->
     <table class="custom-order-form">
 
-      <!-- Table Headers ------------------------------------------------------->
+      <!-- Table Headers ----------------------------------------------------->
       <thead>
         <tr
           style="
@@ -45,7 +48,7 @@ Customized by: Michael X
       </thead>
 
       <!-- Body ---------------------------------------------------------------->
-      <tbody>
+      <tbody ref="formBody">
         <template v-for="product in testProducts">
 
           <template v-if="product.available">
@@ -60,7 +63,7 @@ Customized by: Michael X
                   "
                 >
 
-                  <!-- Preview Image ------------------------------------------->
+                  <!-- Preview Image ----------------------------------------->
                   <td class="product-preview">
                     <img
                       :src="product.featured_image"
@@ -68,7 +71,7 @@ Customized by: Michael X
                     />
                   </td>
 
-                  <!-- Title --------------------------------------------------->
+                  <!-- Title ------------------------------------------------->
                   <td
                     class="product-title"
                     @click="goToProduct(variant.url)"
@@ -82,13 +85,13 @@ Customized by: Michael X
                     </template>
                   </td>
 
-                  <!-- Price --------------------------------------------------->
+                  <!-- Price ------------------------------------------------->
                   <td class="product-price">
                      ${variant.price}
                   </td>
 
 
-                  <!-- Custom Engraving (optional) ----------------------------->
+                  <!-- Custom Engraving (optional) --------------------------->
                   {% if settings.engraving_enabled == 'yes' %}
                   <td class="product-engraving">
                     <p
@@ -96,16 +99,16 @@ Customized by: Michael X
                       style="width: 100%;"
                     >
                       <input
-                        id="custom-engraving"
                         type="text"
-                        :name="variant.engravingName"
+                        :ref="'engraving--'+variant.id"
+                        :name="'engraving--'+variant.id"
                         style="padding: 10px; width: 100%;"
                       >
                     </p>
                   </td>
                   {% endif %}
 
-                  <!-- Donate To SickKids (required) --------------------------->
+                  <!-- Donate To SickKids (required) ------------------------->
                   {% if settings.donate_enabled == 'yes' %}
                   <td class="product-donate">
                     <p
@@ -128,9 +131,12 @@ Customized by: Michael X
                           display: flex;
                         "
                       >
-                        <label class="custom-input-group" style="margin-right: 10px;">
+
+                        <label
+                          class="custom-input-group"
+                          style="margin-right: 10px;"
+                        >
                           <input
-                            
                             class="required"
                             type="radio"
                             :name="variant.donateName"
@@ -138,6 +144,7 @@ Customized by: Michael X
                           >
                           <span>Yes</span>
                         </label>
+
                         <label class="custom-input-group">
                           <input
                             class="required"
@@ -165,7 +172,7 @@ Customized by: Michael X
                     {% endcapture %}
 
                     <input
-                      name="updates[{{ variant.id }}]"
+                      name="updates[]"
                       {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %}
                         max="{{ variant.inventory_quantity }}"
                       {% endunless %}
@@ -232,6 +239,7 @@ Customized by: Michael X
 <!-- Vue --------------------------------------->
 <script>
 
+  // Build array of products from liquid collection
   var myProducts = []
 
   {% for product in collection.products %}
@@ -243,6 +251,7 @@ Customized by: Michael X
     object.title = "{{ product.title }}"
     myProducts.push(object)
 
+    // Variants
     {% for variant in product.variants %}
 
       var variantObject = {}
@@ -261,54 +270,53 @@ Customized by: Michael X
       variantObject.quantityName = 'updates' + "[{{variant.id}}]"
       object.variants.push(variantObject)
 
-
-
-
       // properties %5B17141988589639 %5D %5B Custom+Engraving %5D: 
       // updates %5B17141988589639 %5D: 4
-
     {% endfor %}
 
   {% endfor %}
 
+  //-- Form -------------------------------------
   var form = new Vue({
+
     delimiters: ['${', '}'],
     el: '#app',
+
+    created() {
+      const products = this.testProducts
+      const variants = []
+      products.forEach(product => {
+        product.variants.forEach(variant => {
+          variants.push(variant)
+        })
+      })
+
+      // console.log(variants)
+
+      let form = variants.map(variant => {
+        return {
+          id: variant.id,
+          quantity: 2,
+          properties: {
+            'Custom Engraving': 'Caroline',
+            'Donate': 'no'
+          }
+        }
+      })
+
+      // console.log(form)
+
+      this.form = form
+
+    },
 
     data() {
       return {
         header: 'Bulk Order Form',
-        testProducts: myProducts,
-
-
-        // build form from testProducts array
-        // form: [
-        //   {
-        //     quantity: 3
-        //     // id: "17141988720711"
-        //   }
-        //   // "17141988720711"
-        // ],
-
-        form: {
-          "17141988720711": {
-            quantity: 99
-          }
-        }
-
-
-        // {
-        //   "17141988720711" : {
-        //     quantity: 0
-        //   }
-        // }
-        
-
-        // form: [5]
-
-        // quantityTest: 5
+        testProducts: myProducts
       }
     },
+
     methods: {
       goToProduct(url) {
 
@@ -317,31 +325,42 @@ Customized by: Michael X
 
       },
 
-      // submitForm() {
-      //   console.log('submitting...')
-      // },
-
-
-
-      submitForm(formData) {
-        alert('fuasdfasdf')
-        console.log('submitting...')
-        console.log(formData)
-
-        let url = '/cart/add.js'
+      submitForm(event) {
+        // console.log(event)
+        // var orderForm = document.getElementById("orderForm");
+        // var formData = new FormData(orderForm);
+        // console.log(orderForm)
+        // console.log(formData.entries())
 
         // gather form data
-
         // create request payloads
-        let data = {
-          id: 17141988720711,
-          quantity: 7
-        }
 
-        // POST payloads 
+        // let data = {
+        //   id: 17141988720711,
+        //   quantity: 7
+        // }
+
+        // // POST payloads
+        const form = this.form
+        // console.log(this.$refs.formBody)
 
 
-        // Default options are marked with *
+        console.log(JSON.stringify(this.$refs.formBody))
+        // console.log(form)
+        // console.log(this.$refs)
+        // console.log(this.$refs['engraving--17141987704903'].value)
+
+        // const refs = this.$refs.toArray()
+
+        // refs.forEach(ref => {
+        //   console.log(Object.keys(ref))
+        // })
+
+        // const data = this.form[0]
+
+        // let url = '/cart/add.js'
+
+        // // Default options are marked with *
         // return fetch(url, {
         //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
         //     mode: 'cors', // no-cors, cors, *same-origin
@@ -358,7 +377,7 @@ Customized by: Michael X
         // .then(response => {
         //   // response.json()
         //   // console.log(response.json())
-        // }); // parses JSON response into native Javascript objects 
+        // }); // parses JSON response into native Javascript objects
       }
 
 
@@ -369,18 +388,11 @@ Customized by: Michael X
 
   })
 
-
-  var testComponent = new Vue({
-    delimiters: ['${', '}'],
-    name: 'msg',
-
-    data() {
-      return {
-        msg: 'monkey message'
-      }
-    },
+  Vue.component('productRow',{template: '<p>Hello I am A</p>'})
 
 
+  const productRow = new Vue({
+    el: "#productRow"
   })
 
 </script>
@@ -419,7 +431,7 @@ Customized by: Michael X
 
 
 {% if collection.products_count > 0 %}
-  <script>
+  <!-- <script>
   jQuery(function($) {
     $('table .quantity:first').focus();
     $('[max]').change(function() {
@@ -431,5 +443,5 @@ Customized by: Michael X
       }
     });
   });
-  </script>
+  </script> -->
 {% endif %}
