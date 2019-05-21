@@ -154,10 +154,8 @@ This order form is a vue component that:
                       <input
                         type="number"
                         v-model="variant.quantityInput"
-                        {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %}
-                          max="{{ variant.inventory_quantity }}"
-                        {% endunless %}
-                        tabindex="1"
+                        min=0
+                        max="variant.inventory_quantity"
                       />
                     </td>
                   </tr>
@@ -223,7 +221,11 @@ This order form is a vue component that:
       variantObj.featured_image = "{{ variant.featured_image }}"
       variantObj.title = "{{ variant.title }}"
       variantObj.sku = "{{ variant.sku }}"
-      variantObj.price = "{{ variant.price | money}}"
+      variantObj.price = "{{ variant.price | money }}"
+      variantObj.inventory_quantity = "{{ variant.inventory_quantity }}"
+      variantObj.inventory_management = "{{ variant.inventory_management }}"
+      variantObj.inventory_policy = "{{ variant.inventory_policy }}"
+      variantObj.product_title = "{{ product.title }}"
 
       // editable properties
       variantObj.donateInput = 'no'
@@ -263,52 +265,63 @@ This order form is a vue component that:
       },
 
       submitForm() {
+        this.error = null
+        this._validateForm()
 
-        if(!this._validateForm()) {
-          this.error = 'Please select at least one item'
-          console.log('error')
-          return
-        }
+        if(!this.error) {
 
-        // gather form data
-        const allVariants = this.allVariants
+          // gather form data
+          const allVariants = this.allVariants
 
-        // create request payloads
-        let payloads = this.payloads
+          // create request payloads
+          let payloads = this.payloads
 
-        allVariants.forEach(variant => {
-          payloads.push({
-            id: parseInt(variant.id),
-            quantity: parseInt(variant.quantityInput),
-            properties: {
-              'Donate': variant.donateInput,
-              'Engraving': variant.engravingInput
-            }
+          allVariants.forEach(variant => {
+            payloads.push({
+              id: parseInt(variant.id),
+              quantity: parseInt(variant.quantityInput),
+              properties: {
+                'Donate': variant.donateInput,
+                'Engraving': variant.engravingInput
+              }
+            })
           })
-        })
 
-        // start request chain
-        this.isAddingToCart = true
-        document.body.scrollTop = 0; // Safari
-        document.documentElement.scrollTop = 0; // Chrome, FF, IE, Opera
-        this._addItem(payloads[0])
+          // start request chain
+          this.isAddingToCart = true
+          document.body.scrollTop = 0; // Safari
+          document.documentElement.scrollTop = 0; // Chrome, FF, IE, Opera
+          this._addItem(payloads[0])
+        }
       },
 
       //-- Internal -----------------------------
 
       _validateForm() {
         const allVariants = this.allVariants
-
-        // validate quantity
         let hasSelectedQuantity = []
 
         allVariants.forEach(variant => {
+
+          // validate quantity
           if (parseInt(variant.quantityInput) > 0) {
             hasSelectedQuantity.push('ok')
           }
+
+          // validate inventory stock
+          if (parseInt(variant.quantityInput) > variant.inventory_quantity) {
+            this.error = `${variant.product_title} only has ${variant.inventory_quantity} in stock.`
+            return
+          }
+
+          // validate engraving
+
         })
 
-        return hasSelectedQuantity.length >= 1
+        if (hasSelectedQuantity.length < 1) {
+          this.error = 'Please select at least one item'
+        }
+
       },
 
       _addItem(payload) {
@@ -335,19 +348,3 @@ This order form is a vue component that:
   })
 
 </script>
-
-{% if collection.products_count > 0 %}
-  <!-- <script>
-  jQuery(function($) {
-    $('table .quantity:first').focus();
-    $('[max]').change(function() {
-      var max = parseInt($(this).attr('max'), 10);
-      var value = parseInt($(this).val(), 10) || 0;
-      if (value > max) {
-        alert('We only have ' + max + ' of this item in stock');
-        $(this).val(max);
-      }
-    });
-  });
-  </script> -->
-{% endif %}
