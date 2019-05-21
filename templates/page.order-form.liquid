@@ -196,7 +196,8 @@ This order form is a vue component that:
 <!-- Vue --------------------------------------------------------------------->
 <script>
 
-  // Construct product/variant objects from collection for vue
+  // Construct product/variant objects from collection
+  // use in vue for display and form
   let allProducts = []
   let allVariants = []
 
@@ -258,6 +259,14 @@ This order form is a vue component that:
       }
     },
 
+    computed: {
+
+      filteredVariants() {
+        return this.allVariants.filter(variant => variant.quantityInput > 0)
+      }
+
+    },
+
     methods: {
 
       goToProduct(url) {
@@ -271,12 +280,12 @@ This order form is a vue component that:
         if(!this.error) {
 
           // gather form data
-          const allVariants = this.allVariants
+          const filteredVariants = this.filteredVariants
 
           // create request payloads
           let payloads = this.payloads
 
-          allVariants.forEach(variant => {
+          filteredVariants.forEach(variant => {
             payloads.push({
               id: parseInt(variant.id),
               quantity: parseInt(variant.quantityInput),
@@ -291,17 +300,16 @@ This order form is a vue component that:
           this.isAddingToCart = true
           document.body.scrollTop = 0; // Safari
           document.documentElement.scrollTop = 0; // Chrome, FF, IE, Opera
-          this._addItem(payloads[0])
+          this._moveAlong()
         }
       },
 
       //-- Internal -----------------------------
-
       _validateForm() {
-        const allVariants = this.allVariants
+        const filteredVariants = this.filteredVariants
         let hasSelectedQuantity = []
 
-        allVariants.forEach(variant => {
+        filteredVariants.forEach(variant => {
 
           // validate quantity
           if (parseInt(variant.quantityInput) > 0) {
