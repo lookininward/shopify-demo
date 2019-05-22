@@ -196,52 +196,70 @@ This order form is a vue component that:
 <!-- Vue --------------------------------------------------------------------->
 <script>
 
-  // Construct product/variant objects from collection
-  // use in vue for display and form
-  let allProducts = []
-  let allVariants = []
+  // Classes: Products and Product variants in collection
+  function ProductObj(id, title, image, available) {
+    this.id = id;
+    this.title = title;
+    this.featured_image = image;
+    this.available = available;
+    this.variants = [];
+  };
+
+  function VariantObj(id, title, image, available, price, sku, url, product_title, quantity, management, policy) {
+    this.id = id;
+    this.title = title;
+    this.featured_image = image;
+    this.available = available;
+    this.price = price;
+    this.sku = sku;
+    this.url = url;
+    this.product_title = product_title;
+    this.inventory_quantity = quantity;
+    this.inventory_management = management;
+    this.inventory_policy = policy;
+    this.donateInput = 'no';
+    this.engravingInput = '';
+    this.quantityInput = 0;
+  };
+
+  // Construct Product and Product variant objects
+  // used for display and form
+  let allProducts = [];
+  let allVariants = [];
+  const fileURL = "//cdn.shopify.com/s/files/1/0063/1770/3239/";
 
   // Products
   {% for product in collection.products %}
-    var productObj = {}
-    productObj.id = "{{ product.id }}"
-    productObj.available = "{{ product.available }}"
-    productObj.featured_image =  "//cdn.shopify.com/s/files/1/0063/1770/3239/" + "{{ product.featured_image }}"
-    productObj.variants = []
-    productObj.title = "{{ product.title }}"
-    allProducts.push(productObj)
+    var productObj = new ProductObj(
+      "{{ product.id }}",
+      "{{ product.title }}",
+      fileURL + "{{ product.featured_image }}",
+      "{{ product.available }}"
+    );
+    allProducts.push(productObj);
 
     // Variants
     {% for variant in product.variants %}
-      var variantObj = {}
-
-      // internal properties
-      variantObj.id = "{{ variant.id }}"
-      variantObj.available = "{{ variant.available }}"
-      variantObj.url = "{{ variant.url }}"
-      variantObj.featured_image = "{{ variant.featured_image }}"
-      variantObj.title = "{{ variant.title }}"
-      variantObj.sku = "{{ variant.sku }}"
-      variantObj.price = "{{ variant.price | money }}"
-      variantObj.inventory_quantity = "{{ variant.inventory_quantity }}"
-      variantObj.inventory_management = "{{ variant.inventory_management }}"
-      variantObj.inventory_policy = "{{ variant.inventory_policy }}"
-      variantObj.product_title = "{{ product.title }}"
-
-      // editable properties
-      variantObj.donateInput = 'no'
-      variantObj.engravingInput = ''
-      variantObj.quantityInput = 0
-
-      productObj.variants.push(variantObj)
-      allVariants.push(variantObj)
-
+      var variantObj = new VariantObj(
+        "{{ variant.id }}",
+        "{{ variant.title }}",
+        fileURL + "{{ product.featured_image }}",
+        "{{ variant.available }}",
+        "{{ variant.price | money }}",
+        "{{ variant.sku }}",
+        "{{ variant.url }}",
+        "{{ product.title }}",
+        "{{ variant.inventory_quantity }}",
+        "{{ variant.inventory_management }}",
+        "{{ variant.inventory_policy }}"
+      );
+      productObj.variants.push(variantObj);
+      allVariants.push(variantObj);
     {% endfor %}
-
   {% endfor %}
 
-  // set base url for shop
-  const shopURL = "{{ shop.url }}"
+  // set base url
+  const shopURL = "{{ shop.url }}";
 
   //-- Form -------------------------------------
   var form = new Vue({
