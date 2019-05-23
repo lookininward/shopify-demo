@@ -7369,6 +7369,11 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
 /*================ Order Form ================*/
 .order-form {
   max-width: 1000px;
+  overflow-x: auto;
+  
+  @media only screen and (min-width: $grid-medium) {
+    overflow-x: unset;
+  }
 
   // layout
   thead tr,
@@ -7417,13 +7422,19 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
   /*================ Actions ================*/
   .order-form-actions {
     @include display-flexbox();
-    @include align-items(center);
-    @include justify-content(space-between);
-    
-    position: sticky;
-    position: -webkit-sticky;
-    bottom: 25px;
+    @include flex-direction(column);
+    @include align-items(flex-end);
+    position: fixed;
+    bottom: 45px;
     padding: 20px 10px;
+
+    @media only screen and (min-width: $grid-medium) {
+      @include flex-direction(row);
+      @include align-items(center);
+      @include justify-content(space-between);
+      position: sticky;
+    }
+
   }
 }
 
@@ -7434,6 +7445,7 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
   height: 38px;
   padding: 0 20px;
   border: 1px solid $color-border;
+  border-radius: 2px;
   background-color: $color-body;
   max-width: 500px;
   font-size: $font-size-base;
@@ -7442,6 +7454,11 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
   &.has-error,
   &.is-loading {
     opacity: 1;
+    margin-bottom: 10px;
+
+    @media only screen and (min-width: $grid-medium) {
+      margin-bottom: 0;
+    }
   }
 
   &.has-error {
