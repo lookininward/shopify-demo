@@ -22,13 +22,9 @@ Customized by: Michael X
 
     <!-- Page Content / Collection Description -->
     {% if template contains 'page' and page.content.size > 0 %}
-      <div class="rte">
-        {{ page.content }}
-      </div>
+      <div class="rte">{{ page.content }}</div>
     {% elsif collection.description.size > 0 %}
-      <div class="rte">
-        {{ collection.description }}
-      </div>
+      <div class="rte">{{ collection.description }}</div>
     {% endif %}
 
     <!-- Product Table -->
@@ -38,10 +34,10 @@ Customized by: Michael X
           <tr>
             <th>Preview</th>
             <th>Name</th>
-            <th>Price</th>
-            <th>Engraving</th>
-            <th>Wrap</th>
-            <th class="product-header-quantity">Quantity</th>
+            <th class="text-center">Price</th>
+            <th class="text-center">Engraving</th>
+            <th class="text-center">Wrap</th>
+            <th class="text-center">Quantity</th>
           </tr>
         </thead>
         <tbody>
@@ -66,7 +62,7 @@ Customized by: Michael X
                   </td>
 
                   <!-- Price -->
-                  <td>{{ variant.price | money }}</td>
+                  <td class="cell-centered">{{ variant.price | money }}</td>
 
                   <!-- Engraving (optional) -->
                   {% if settings.engraving_enabled == 'yes' %}
@@ -75,14 +71,16 @@ Customized by: Michael X
 
                   <!-- Plastic Wrap (required) -->
                   {% if settings.donate_enabled == 'yes' %}
-                  <td><input type="checkbox" class="plastic"></td>
+                  <td class="cell-centered">
+                    <input type="checkbox" class="plastic" required>
+                  </td>
                   {% endif %}
 
                   <!-- Quantity -->
-                  <td class="product-quantity">
+                  <td>
                     <input
                       onfocus="this.select()"
-                      class="quantity"
+                      class="quantity text-center"
                       min="0"
                       {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %}
                         max="{{ variant.inventory_quantity }}"

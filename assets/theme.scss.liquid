@@ -7358,75 +7358,68 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
   }
 }
 
-//-- Custom Styles ------------------------------------------------------------
+/*================ CUSTOM STYLES ================*/
+/*============================================================================
+  Custom styles for order form template
+==============================================================================*/
 .container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  @include display-flexbox();
+  @include justify-content(center);
 }
 
+/*================ Order Form ================*/
 .order-form {
   max-width: 1000px;
 
-  thead tr {
+  // layout
+  thead tr,
+  tbody tr {
     display: grid;
-    grid-template-columns: 100px 2fr 100px 100px 1fr 100px;
+    grid-template-columns: 100px 2fr 100px 120px 75px 100px;
     grid-template-rows: 1fr;
-    border-top: 1px solid $color-border;
     border-bottom: 1px solid $color-border;
   }
 
-  tbody tr {
-    display: grid;
-    grid-template-columns: 100px 2fr 100px 100px 1fr 100px;
-    grid-template-rows: 1fr;
-    border-bottom: 1px solid $color-border;
+  // display
+  thead tr {
+    border-top: 1px solid $color-border;
+  }
 
-    &:hover{
-      background-color: $color-border;
-    }
+  tbody tr:hover {
+    background-color: $color-border;
   }
 
   th, td, a {
     border: none;
   }
 
+  th, td {
+    padding: 0 10px;
+  }
+
   tr {
     padding: 10px 0;
   }
 
-  th {
-    text-align: left;
-    padding: 0 10px;
-  }
-
   td {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 0 10px;
+    @include display-flexbox();
+    @include align-items(center);
   }
 
-  .custom-input-group {
+  .cell-centered {
+    @include justify-content(center);
+  }
+
+  /*================ Inputs ================*/
+  input[type="checkbox"] {
     cursor: pointer;
-
-    input {
-      margin-right: 5px;
-    }
   }
-
-  //-- Header Cells -----------------------------
-  .product-header-quantity {
-    text-align: center;
-  }
-
-  //-- Body Cells -------------------------------
+  
+  /*================ Actions ================*/
   .order-form-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;  
+    @include display-flexbox();
+    @include align-items(center);
+    @include justify-content(space-between);
     padding: 20px;
   }
 
