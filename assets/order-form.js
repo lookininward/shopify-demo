@@ -32,6 +32,10 @@ $(function() {
     _clearErrors();
     $(".notifications").html(errorText);
     $(".notifications").addClass("has-error");
+
+    setTimeout(function() { // clear errors after x ms
+      _clearErrors();
+    }, 1000);
   }
 
   /* -- Submit Order --------------------------------------------------------*/
