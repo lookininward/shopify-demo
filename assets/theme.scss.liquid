@@ -7359,27 +7359,32 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
 }
 
 //-- Custom Styles ------------------------------------------------------------
-
-.custom-input-group {
-  cursor: pointer;
-
-  input {
-    margin-right: 5px;
-  }
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.custom-order-form {
+.order-form {
+  max-width: 1000px;
 
   thead tr {
-    border-top: 1px solid #e8e9eb;
-    border-bottom: 1px solid #e8e9eb;
+    display: grid;
+    grid-template-columns: 100px 2fr 100px 100px 1fr 100px;
+    grid-template-rows: 1fr;
+    border-top: 1px solid $color-border;
+    border-bottom: 1px solid $color-border;
   }
 
   tbody tr {
-    border-bottom: 1px solid #e8e9eb;
+    display: grid;
+    grid-template-columns: 100px 2fr 100px 100px 1fr 100px;
+    grid-template-rows: 1fr;
+    border-bottom: 1px solid $color-border;
 
     &:hover{
-      background-color: #e8e9eb;
+      background-color: $color-border;
     }
   }
 
@@ -7404,31 +7409,25 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
     padding: 0 10px;
   }
 
+  .custom-input-group {
+    cursor: pointer;
+
+    input {
+      margin-right: 5px;
+    }
+  }
+
   //-- Header Cells -----------------------------
   .product-header-quantity {
     text-align: center;
   }
 
   //-- Body Cells -------------------------------
-  .product-preview {}
-  .product-title {}
-  .product-price {}
-
-  .product-engraving {
-    input {
-      max-width: 300px;
-      padding: 0;
-      text-align: left;
-    }
-  }
-
-  .product-quantity {
+  .order-form-actions {
+    display: flex;
     align-items: center;
-    input {
-      max-width: 50px;
-      padding: 0;
-      text-align: center;
-    }
+    justify-content: space-between;  
+    padding: 20px;
   }
 
 }

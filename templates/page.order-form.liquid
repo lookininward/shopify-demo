@@ -16,14 +16,9 @@ Customized by: Michael X
 
 {% paginate collection.products by 100 %}
 
-<div
-  class="container"
-  style="
-    padding: 0 20px;
-  "
->
+<div class="container">
 
-  <form method="post">
+  <form class="order-form" method="post">
 
     <!-- Page Content / Collection Description -->
     {% if template contains 'page' and page.content.size > 0 %}
@@ -38,20 +33,14 @@ Customized by: Michael X
 
     <!-- Product Table -->
     {% if collection.products_count > 0 %}
-      <table class="custom-order-form">
+      <table>
         <thead>
-          <tr
-            style="
-              display: grid;
-              grid-template-columns: 100px 1fr 100px 200px 1fr 100px;
-              grid-template-rows: 1fr;
-            "
-          >
+          <tr>
             <th>Preview</th>
             <th>Name</th>
             <th>Price</th>
             <th>Engraving</th>
-            <th class="product-header-donate">Donate</th>
+            <th>Wrap</th>
             <th class="product-header-quantity">Quantity</th>
           </tr>
         </thead>
@@ -60,78 +49,40 @@ Customized by: Michael X
           {% if product.available %}
             {% for variant in product.variants %}
               {% if variant.available %}
-                <tr
-                  id="{{ variant.id }}"
-                  class="variant-row {% cycle 'pure-table-odd', '' %}"
-                  style="
-                    display: grid;
-                    grid-template-columns: 100px 1fr 100px 200px 1fr 100px;
-                    grid-template-rows: 1fr;
-                  "
-                >
-                  <td class="product-preview">
+                <tr id="{{ variant.id }}" class="variant-row">
+
+                  <!-- Preview -->
+                  <td>
                     <a href="{{ variant.url | collection }}">
                       <img src="{{ variant.image | default: product.featured_image | img_url: 'small' }}" alt="{{ variant.title | escape }}" />
                     </a>
                   </td>
-                  <td class="product-title">
+
+                  <!-- Title -->
+                  <td>
                     <a href="{{ variant.url | collection }}">
                      {{ product.title }}{% unless variant.title contains 'Default' %} - {{ variant.title }}{% endunless %}{% unless variant.sku == blank %} - {{ variant.sku }}{% endunless %}
                     </a>
                   </td>
-                  <td class="product-price">
-                     {{ variant.price | money }}
-                  </td>
 
-                  <!-- Custom Engraving (optional) -->
+                  <!-- Price -->
+                  <td>{{ variant.price | money }}</td>
+
+                  <!-- Engraving (optional) -->
                   {% if settings.engraving_enabled == 'yes' %}
-                  <td class="product-engraving">
-                    <p
-                      class="line-item-property__field"
-                      style="width: 100%;"
-                    >
-                      <input
-                        type="text"
-                        class="engraving custom-engraving"
-                        style="padding: 10px; width: 100%;"
-                      >
-                    </p>
-                  </td>
+                  <td><input type="text" class="engraving"></td>
                   {% endif %}
 
-                  <!-- Donate To SickKids (required) -->
+                  <!-- Plastic Wrap (required) -->
                   {% if settings.donate_enabled == 'yes' %}
-                  <td class="product-donate">
-                    <p
-                      class="line-item-property__field"
-                      style="margin: 0;"
-                    >
-                      <label
-                        style="
-                          display: flex;
-                          flex-direction: row;
-                          align-items: center;
-                        "
-                      >
-                        Plastic Wrap
-                      </label>
-
-
-                      <input
-                        type="checkbox"
-                        class="plastic"
-                        name="usePlasticWrap"
-                        value="usePlasticWrap"
-                      >
-
-                    </p>
-                  </td>
+                  <td><input type="checkbox" class="plastic"></td>
                   {% endif %}
 
+                  <!-- Quantity -->
                   <td class="product-quantity">
                     <input
                       onfocus="this.select()"
-                      class="quantity field"
+                      class="quantity"
                       min="0"
                       {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %}
                         max="{{ variant.inventory_quantity }}"
@@ -151,14 +102,8 @@ Customized by: Michael X
       </table>
 
       <!-- Actions -->
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          justify-content: flex-end;
-          padding: 20px;
-        "
-      >
+      <div class="order-form-actions">
+        <div class="input-error-message"></div>
         <input id="SubmitOrder" type="submit" value="Add to the cart" />
       </div>
 
