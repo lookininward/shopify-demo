@@ -1,16 +1,16 @@
 $(function() {
 
+  /* -- Validation --------------------------------------------------------- */
   // focus quantity input of first variant on page load
   $('table .quantity:first').focus();
 
   // validate - quantity doesn't exceed stock
-  $('[max]').change(function() {
+  $('[max]').change(function(event) {
     var max = parseInt($(this).attr('max'), 10);
     var value = parseInt($(this).val(), 10) || 0;
     if (value > max) {
-      alert('We only have ' + max + ' of this item in stock');
       $(this).val(max);
-      $(this).addClass("input--error");
+      _addError('We only have ' + max + ' of this item in stock');
     }
   });
 
@@ -18,16 +18,27 @@ $(function() {
   $('.engraving').change(function() {
     let engravingText = $(this).val();
     if (engravingText.length > 5) {
-      alert('Engravings are limited to 5 characters');
       $(this).val(engravingText.slice(0,5));
-      $(this).addClass("input--error");
+      _addError('Engravings are limited to 5 characters.');
     }
   });
 
+  function _clearErrors() {
+    $(".form-error").html();
+    $(".form-error").removeClass("has-error");
+  }
+
+  function _addError(errorText) {
+    _clearErrors();
+    $(".form-error").html(errorText);
+    $(".form-error").addClass("has-error");
+  }
+
+  /* -- Submit Order --------------------------------------------------------*/
   $("#SubmitOrder").click(function (event) {
     event.preventDefault();
     event.stopPropagation();
-    $(".input-error-message").html(); // clear error if any
+    _clearErrors();
 
     const variants = $( ".variant-row" ).toArray();
     const selectedVariants = variants.filter(variant =>
@@ -35,7 +46,7 @@ $(function() {
     );
 
     if (selectedVariants.length < 1) {
-      $(".input-error-message").html('Please select at least one item.');
+      _addError('Please select at least one item.');
       return;
     }
 

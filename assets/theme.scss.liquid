@@ -2600,7 +2600,6 @@ textarea {
 .page-container {
   transition: $transition-drawer;
   position: relative;
-  overflow: hidden;
 
   @include media-query($medium-up) {
     // Prevent mobile menu inline styles from overriding desktop styles
@@ -7420,7 +7419,24 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
     @include display-flexbox();
     @include align-items(center);
     @include justify-content(space-between);
-    padding: 20px;
+    
+    position: sticky;
+    position: -webkit-sticky;
+    bottom: 25px;
+    padding: 20px 10px;
   }
+}
 
+/*================ Errors ================*/
+.form-error {
+  color: $color-error;
+  border: 1px solid $color-error;
+  background-color: $color-body;
+  padding: 10px 18px;
+  max-width: 500px;
+  opacity: 0;
+
+  &.has-error {
+    opacity: 1;
+  }
 }

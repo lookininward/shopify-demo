@@ -101,8 +101,17 @@ Customized by: Michael X
 
       <!-- Actions -->
       <div class="order-form-actions">
-        <div class="input-error-message"></div>
-        <input id="SubmitOrder" type="submit" value="Add to the cart" />
+
+        <!-- Errors -->
+        <div class="form-error"></div>
+
+        <!-- Submit -->
+        <input
+          id="SubmitOrder"
+          type="submit"
+          value="Add to the cart"
+          class="btn btn--secondary-accent"
+        />
       </div>
 
     {% else %}
@@ -112,8 +121,8 @@ Customized by: Michael X
   </form>
 
 </div>
-{% endpaginate %}
 
+{% endpaginate %}
 
 <!-- Scripts ----------------------------------------------------------------->
 {% if collection.products_count > 0 %}
