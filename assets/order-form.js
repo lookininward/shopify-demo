@@ -24,14 +24,14 @@ $(function() {
   });
 
   function _clearErrors() {
-    $(".form-error").html();
-    $(".form-error").removeClass("has-error");
+    $(".notifications").html();
+    $(".notifications").removeClass("has-error");
   }
 
   function _addError(errorText) {
     _clearErrors();
-    $(".form-error").html(errorText);
-    $(".form-error").addClass("has-error");
+    $(".notifications").html(errorText);
+    $(".notifications").addClass("has-error");
   }
 
   /* -- Submit Order --------------------------------------------------------*/
@@ -49,6 +49,10 @@ $(function() {
       _addError('Please select at least one item.');
       return;
     }
+
+    // Notification - Loading
+    $(".notifications").html("Hang on while we add update the cart with your order.<br>You will be redirected in a moment");
+    $(".notifications").addClass("is-loading");
 
     const payloads = selectedVariants.map(variant => {
       return {
