@@ -23,7 +23,7 @@ Customized by: Michael X
   "
 >
 
-  <form action="/cart" method="post">
+  <form method="post">
 
     <!-- Page Content / Collection Description -->
     {% if template contains 'page' and page.content.size > 0 %}
@@ -61,7 +61,8 @@ Customized by: Michael X
             {% for variant in product.variants %}
               {% if variant.available %}
                 <tr
-                  class="{% cycle 'pure-table-odd', '' %}"
+                  id="{{ variant.id }}"
+                  class="variant-row {% cycle 'pure-table-odd', '' %}"
                   style="
                     display: grid;
                     grid-template-columns: 100px 1fr 100px 200px 1fr 100px;
@@ -90,14 +91,10 @@ Customized by: Michael X
                       style="width: 100%;"
                     >
                       <input
-                        id="custom-engraving"
                         type="text"
-                        name="properties[{{ variant.id }}]"
-                        class="custom-engraving"
+                        class="engraving custom-engraving"
                         style="padding: 10px; width: 100%;"
                       >
-                      <!-- name="properties[Custom Engraving]" -->
-                      <!-- max="{{ variant.inventory_quantity }}" -->
                     </p>
                   </td>
                   {% endif %}
@@ -116,42 +113,33 @@ Customized by: Michael X
                           align-items: center;
                         "
                       >
-                        {{ settings.donate_organization}}
-                        ({{ settings.donate_percentage}}%)
+                        Plastic Wrap
                       </label>
 
-                      <div
-                        style="
-                          display: flex;
-                        "
+
+                      <input
+                        type="checkbox"
+                        class="plastic"
+                        name="usePlasticWrap"
+                        value="usePlasticWrap"
                       >
-                        <label class="custom-input-group" style="margin-right: 10px;">
-                          <input
-                            required
-                            class="required"
-                            type="radio"
-                            name="properties[Donate]"
-                            value="yes"
-                          >
-                          <span>Yes</span>
-                        </label>
-                        <label class="custom-input-group">
-                          <input
-                            required
-                            class="required"
-                            type="radio"
-                            name="properties[Donate]"
-                            value="no"
-                          >
-                          <span>No</span>
-                        </label>
-                      </div>
+
                     </p>
                   </td>
                   {% endif %}
 
                   <td class="product-quantity">
-                    <input name="updates[{{ variant.id }}]" onfocus="this.select()" class="quantity field" min="0" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="0" tabindex="1" />
+                    <input
+                      onfocus="this.select()"
+                      class="quantity field"
+                      min="0"
+                      {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %}
+                        max="{{ variant.inventory_quantity }}"
+                      {% endunless %}
+                      type="text"
+                      value="0"
+                      tabindex="1"
+                    />
                   </td>
 
                 </tr>
@@ -171,7 +159,7 @@ Customized by: Michael X
           padding: 20px;
         "
       >
-        <input type="submit" value="Add to the cart" />
+        <input id="SubmitOrder" type="submit" value="Add to the cart" />
       </div>
 
     {% else %}
@@ -209,6 +197,48 @@ Customized by: Michael X
         $(this).val(engravingText.slice(0,5));
       }
     });
+
+    $("#SubmitOrder").click(function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const variants = $( ".variant-row" ).toArray();
+      const selectedVariants = variants.filter(variant =>
+         parseInt($(variant).find( ".quantity" ).val()) > 0
+      );
+
+      const payloads = selectedVariants.map(variant => {
+        return {
+          id: parseInt($( variant).attr( "id" )),
+          quantity: parseInt($(variant).find( ".quantity" ).val()),
+          properties: {
+            engraving: $(variant).find( ".engraving" ).val(),
+            plastic: $(variant).find(".plastic")
+                                       .prop('checked') == true
+          }
+        }
+      });
+
+      _moveAlong(payloads);
+    });
+
+    function _moveAlong(payloads) {
+      if (payloads.length) { // requests in queue, process next request
+        const request = payloads.shift();
+        _addItem(request, payloads);
+      } else { // queue empty, redirect to checkout
+        window.location.href = "/checkout";
+      }
+    };
+
+    function _addItem(request, payloads) {
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request)
+      }).then(response => response.json())
+        .then(() => { _moveAlong(payloads) })
+    };
 
   });
   </script>
