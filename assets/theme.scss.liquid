@@ -7366,8 +7366,11 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
   @include flex-direction(column);
   @include align-items(center);
   @include justify-content(center);
-  position: relative;
-  top: -70px;
+  
+  @media only screen and (min-width: $grid-medium) {
+    position: relative;
+    top: -70px;  
+  }
 }
 
 /*================ Order Form ================*/
@@ -7466,7 +7469,6 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
 .notifications {
   @include display-flexbox();
   @include align-items(center);
-  max-width: 350px;
   height: 70px;  
   padding: 0 20px;
   border-left: 10px solid transparent;
@@ -7475,12 +7477,19 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
   box-shadow: 0 6px 10px -4px rgba(0,0,0,.15);
   font-size: $font-size-base;
   line-height: 1.4;
-  position: sticky;
-  left: 50px;
-  top: 100px;
+  position: fixed;
+  bottom: 120px;
+  left: 0px;
   opacity: 0;
   z-index: 9;
   transition: opacity .2s;
+
+  @media only screen and (min-width: $grid-medium) {
+    position: sticky;
+    top: 100px;
+    left: 50px;
+    max-width: 350px;
+  }
 
   &.has-error,
   &.is-loading {
