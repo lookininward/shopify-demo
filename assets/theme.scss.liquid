@@ -7384,7 +7384,8 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
   thead tr,
   tbody tr {
     display: grid;
-    grid-template-columns: 100px 2fr 100px 120px 75px 100px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-auto-flow: column;
     grid-template-rows: 1fr;
     border-bottom: 1px solid $color-border;
   }
@@ -7404,6 +7405,7 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
 
   th, td {
     padding: 0 10px;
+    text-align: center;
   }
 
   tr {

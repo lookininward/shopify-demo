@@ -36,11 +36,15 @@ Customized by: Michael X
         <thead>
           <tr>
             <th>Preview</th>
-            <th>Name</th>
-            <th class="text-center">Price</th>
-            <th class="text-center">Engraving</th>
-            <th class="text-center">Wrap</th>
-            <th class="text-center">Quantity</th>
+            <th class="text-left">Name</th>
+            <th>Price</th>
+            {% if settings.engraving_enabled == 'yes' %}
+            <th>Engraving</th>
+            {% endif %}
+            {% if settings.donate_enabled == 'yes' %}
+            <th>Wrap</th>
+            {% endif %}
+            <th>Quantity</th>
           </tr>
         </thead>
         <tbody>
@@ -51,7 +55,7 @@ Customized by: Michael X
                 <tr id="{{ variant.id }}" class="variant-row">
 
                   <!-- Preview -->
-                  <td>
+                  <td class="cell-centered">
                     <a href="{{ variant.url | collection }}">
                       <img src="{{ variant.image | default: product.featured_image | img_url: 'small' }}" alt="{{ variant.title | escape }}" />
                     </a>
@@ -86,7 +90,7 @@ Customized by: Michael X
                   {% endif %}
 
                   <!-- Quantity -->
-                  <td>
+                  <td class="cell-centered">
                     <input
                       onfocus="this.select()"
                       class="quantity text-center"
