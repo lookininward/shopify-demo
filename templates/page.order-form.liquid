@@ -129,13 +129,15 @@ Customized by: Michael X
         {% endfor %}
         </tbody>
       </table>
+
+      {% if settings.wrapping_enabled %}
       <p class="info info--wrapping">
         * {{settings.wrapping_message}}
       </p>
+      {% endif %}
 
       <!-- Actions -->
       <div class="order-form-actions">
-        <!-- Submit -->
         <input
           id="SubmitOrder"
           type="submit"

@@ -7439,6 +7439,7 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
   /*================ Info ================*/
   .info.info--wrapping {
     max-width: 500px;
+    padding: 10px 20px;
   }
   
   /*================ Actions ================*/
@@ -7497,4 +7498,25 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
     color: black;
   }
 
+}
+
+/*================ Product Page ================*/
+.line-item-property__field.radio-group {
+  @include display-flexbox();
+  @include align-items(center);
+
+  label {
+    @include display-flexbox();
+    @include align-items(center);
+    @include justify-content(flex-start);
+    width: auto;
+    margin-right: 10px;
+    cursor: pointer;
+
+    input[type="radio"] {
+      margin-right: 5px;
+      cursor: pointer;
+    }
+      
+  }
 }

@@ -172,72 +172,49 @@
               Product Template Customizations
               Options:
                 - Add option for custom text engraving to product
-                - Add option for donation to merchant's organization of choice
+                - Add option for individually wrapping products
             {% endcomment %}
+
 
             <!-- Custom Engraving (optional) -->
             {% if settings.engraving_enabled == 'yes' %}
               <p class="line-item-property__field">
-                <label for="custom-engraving">Custom Engraving ($5)</label>
-                <input id="custom-engraving" type="text" name="properties[Custom Engraving]">
+                <label for="properties[Engraving]">
+                  Engraving (max {{settings.engraving_length}} characters)
+                </label>
+                <input
+                  type="text"
+                  class="engraving"
+                  name="properties[Engraving]"
+                  maxlength="{{settings.engraving_length}}"
+                >
               </p>
             {% endif %}
 
             <!-- Donate To SickKids (required) -->
-            {% if settings.donate_enabled == 'yes' %}
-              <p class="line-item-property__field">
-                <label
-                  style="
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                  "
-                >
-                  Donate to {{ settings.donate_organization}} ({{ settings.donate_percentage}}%)
-
-                  <!-- Donate to {{ settings.donate_organization}}
+            {% if settings.wrapping_enabled == 'yes' %}
+              <p class="line-item-property__field radio-group">
+                <label>* Wrapping:</label>
+                <label>
                   <input
-                    required
-                    class="required"
-                    style ="
-                      max-width: 40px;
-                      padding: 0px 0px;
-                      margin: 0 5px;
-                      min-height: auto;
-                      text-align: center;
-                    "
-                    type="integer"
-                    name="properties[Percentage]"
-                    value={{ settings.donate_percentage}}
-                  >% -->
-
-                </label>
-                <label class="custom-input-group">
-                  <input
-                    required
-                    class="required"
                     type="radio"
-                    name="properties[Donate]"
+                    class="doWrap"
+                    name="properties[Individually Wrapped]"
                     value="yes"
                   >
-                  <span>Yes</span>
+                  Yes
                 </label>
-                <label class="custom-input-group">
+                <label>
                   <input
-                    required
-                    class="required"
                     type="radio"
-                    name="properties[Donate]"
+                    name="properties[Individually Wrapped]"
                     value="no"
+                    required
                   >
-                  <span>No</span>
+                    No
                 </label>
               </p>
             {% endif %}
-
-            {% comment %}
-              End - Product Template Customizations
-            {% endcomment %}
 
             <div class="product-form__error-message-wrapper product-form__error-message-wrapper--hidden" data-error-message-wrapper role="alert">
               {% include 'icon-error' %} <span class="product-form__error-message" data-error-message>{{ 'products.product.quantity_minimum_message' | t }}</span>
@@ -271,6 +248,12 @@
         <div class="product-single__description rte">
           {{ product.description }}
         </div>
+
+        {% if settings.wrapping_message %}
+        <div class="product-single__description rte">
+          * {{settings.wrapping_message}}
+        </div>
+        {% endif %}
 
         {% if section.settings.show_share_buttons %}
           {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
