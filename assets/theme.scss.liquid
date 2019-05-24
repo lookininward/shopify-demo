@@ -7363,12 +7363,17 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
 ==============================================================================*/
 .container {
   @include display-flexbox();
+  @include flex-direction(column);
+  @include align-items(center);
   @include justify-content(center);
+  position: relative;
+  top: -70px;
 }
 
 /*================ Order Form ================*/
 .order-form {
   max-width: 1000px;
+  width: 100%;
   overflow-x: auto;
   
   @media only screen and (min-width: $grid-medium) {
@@ -7422,16 +7427,17 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
   /*================ Actions ================*/
   .order-form-actions {
     @include display-flexbox();
-    @include flex-direction(column);
-    @include align-items(flex-end);
+    @include align-items(center);
+    @include justify-content(flex-end);
     position: fixed;
+    right: 0;
     bottom: 45px;
     padding: 20px 10px;
 
     @media only screen and (min-width: $grid-medium) {
+      @include display-flexbox();
       @include flex-direction(row);
-      @include align-items(center);
-      @include justify-content(space-between);
+      @include justify-content(flex-end);
       position: sticky;
     }
 
@@ -7442,27 +7448,35 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
 .notifications {
   @include display-flexbox();
   @include align-items(center);
-  height: 38px;
+  max-width: 350px;
+  height: 70px;  
   padding: 0 20px;
-  border: 1px solid $color-border;
   border-radius: 2px;
   background-color: $color-body;
-  max-width: 500px;
+  box-shadow: 0 6px 10px -4px rgba(0,0,0,.15);
   font-size: $font-size-base;
+  line-height: 1.4;
+  position: sticky;
+  left: 50px;
+  top: 100px;
   opacity: 0;
+  z-index: 9;
+  transition: all .6s;
 
   &.has-error,
   &.is-loading {
     opacity: 1;
-    margin-bottom: 10px;
-
-    @media only screen and (min-width: $grid-medium) {
-      margin-bottom: 0;
-    }
+    transition: all .6s;
   }
 
   &.has-error {
-    border: 1px solid $color-error;
+    border-left: 10px solid $color-error;
     color: $color-error;
   }
+
+  &.is-loading {
+    border-left: 10px solid green;
+    color: black;
+  }
+
 }

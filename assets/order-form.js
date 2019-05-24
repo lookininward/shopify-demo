@@ -10,7 +10,7 @@ $(function() {
     var value = parseInt($(this).val(), 10) || 0;
     if (value > max) {
       $(this).val(max);
-      _addError('We only have ' + max + ' of this item in stock');
+      _notify('error', 'We only have ' + max + ' of this item in stock.');
     }
   });
 
@@ -19,23 +19,30 @@ $(function() {
     let engravingText = $(this).val();
     if (engravingText.length > 5) {
       $(this).val(engravingText.slice(0,5));
-      _addError('Engravings are limited to 5 characters.');
+      _notify('error', 'Engravings can be up to 5 characters.<br>They\'ll come out great. Promise!');
     }
   });
 
   function _clearErrors() {
-    $(".notifications").html();
     $(".notifications").removeClass("has-error");
+    $(".notifications").removeClass("is-loading");
+    $(".notifications").html();
   }
 
-  function _addError(errorText) {
+  function _notify(type, notificationText) {
     _clearErrors();
-    $(".notifications").html(errorText);
-    $(".notifications").addClass("has-error");
+    const notifications = $(".notifications");
+    notifications.html(notificationText);
+
+    if (type == 'error') {
+      notifications.addClass("has-error");
+    } else if (type == 'success') {
+      notifications.addClass("is-loading");
+    }
 
     setTimeout(function() { // clear errors after x ms
       _clearErrors();
-    }, 1000);
+    }, 2200);
   }
 
   /* -- Submit Order --------------------------------------------------------*/
@@ -50,13 +57,12 @@ $(function() {
     );
 
     if (selectedVariants.length < 1) {
-      _addError('Please select at least one item.');
+      _notify('error','Please select at least one item.');
       return;
     }
 
     // Notification - Loading
-    $(".notifications").html("Hang on while we add update the cart with your order.<br>You will be redirected in a moment");
-    $(".notifications").addClass("is-loading");
+    _notify('success', "Hang on. You'll be redirected to checkout in a moment.");
 
     const payloads = selectedVariants.map(variant => {
       return {

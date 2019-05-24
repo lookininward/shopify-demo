@@ -3,20 +3,23 @@ Source: https://gist.github.com/carolineschnapp/9122054
 Customized by: Michael X
 {% endcomment %}
 
-<!-- Header -->
-<header class="collection-header">
-  <div class="page-width">
-    <div class="section-header text-center">
-      <h1>Bulk Order Form</h1>
-    </div>
-  </div>
-</header>
+<!-- Notifications -->
+<div class="notifications"></div>
 
 {% assign collection = collections.all %}
 
 {% paginate collection.products by 100 %}
 
 <div class="container">
+
+  <!-- Header -->
+  <header class="collection-header">
+    <div class="page-width">
+      <div class="section-header text-center">
+        <h1>Bulk Order Form</h1>
+      </div>
+    </div>
+  </header>
 
   <form class="order-form" method="post">
 
@@ -85,7 +88,7 @@ Customized by: Michael X
                       {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %}
                         max="{{ variant.inventory_quantity }}"
                       {% endunless %}
-                      type="text"
+                      type="number"
                       value="0"
                       tabindex="1"
                     />
@@ -101,10 +104,6 @@ Customized by: Michael X
 
       <!-- Actions -->
       <div class="order-form-actions">
-
-        <!-- Notifications -->
-        <div class="notifications"></div>
-
         <!-- Submit -->
         <input
           id="SubmitOrder"
