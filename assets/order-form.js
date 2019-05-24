@@ -73,10 +73,10 @@ $(function() {
         id: parseInt($(variant).attr( "id" )),
         quantity: parseInt($(variant).find( ".quantity" ).val()),
         properties: {
-          engraving: $(variant).find( ".engraving" ).val(),
-          plastic: $(variant).find(".plastic").prop('checked') == true
+          'Engraving': $(variant).find( ".engraving" ).val(),
+          'Individually Wrapped': $(variant).find(".doWrap").prop('checked') == true ? 'Yes' : 'No'
         }
-      }
+      };
     });
 
     _moveAlong(payloads);

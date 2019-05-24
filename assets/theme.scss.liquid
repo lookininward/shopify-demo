@@ -7422,8 +7422,23 @@ $transition-controls-video: color 0.2s $ease-transition, background-color 0.2s $
   }
 
   /*================ Inputs ================*/
-  input[type="checkbox"] {
+  input[type="checkbox"],
+  input[type="radio"],
+  .wrap label {
     cursor: pointer;
+  }
+
+  .wrap label {
+    margin: 0;
+
+    &:first-child{ 
+      margin-right: 5px;
+    }
+  }
+
+  /*================ Info ================*/
+  .info.info--wrapping {
+    max-width: 500px;
   }
   
   /*================ Actions ================*/

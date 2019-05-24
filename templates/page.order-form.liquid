@@ -41,8 +41,8 @@ Customized by: Michael X
             {% if settings.engraving_enabled == 'yes' %}
             <th>Engraving</th>
             {% endif %}
-            {% if settings.donate_enabled == 'yes' %}
-            <th>Wrap</th>
+            {% if settings.wrapping_enabled == 'yes' %}
+            <th>Wrapping *</th>
             {% endif %}
             <th>Quantity</th>
           </tr>
@@ -83,9 +83,27 @@ Customized by: Michael X
                   {% endif %}
 
                   <!-- Plastic Wrap (required) -->
-                  {% if settings.donate_enabled == 'yes' %}
-                  <td class="cell-centered">
-                    <input type="checkbox" class="plastic" required>
+                  {% if settings.wrapping_enabled == 'yes' %}
+                  <td class="wrap cell-centered">
+                    <label>
+                      <input
+                        type="radio"
+                        class="doWrap"
+                        name="doWrap {{variant.id}}"
+                        value="yes"
+                      >
+                      Yes
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="doWrap {{variant.id}}"
+                        value="no"
+                        checked="checked"
+                        required
+                      >
+                        No
+                    </label>
                   </td>
                   {% endif %}
 
@@ -111,6 +129,9 @@ Customized by: Michael X
         {% endfor %}
         </tbody>
       </table>
+      <p class="info info--wrapping">
+        * {{settings.wrapping_message}}
+      </p>
 
       <!-- Actions -->
       <div class="order-form-actions">

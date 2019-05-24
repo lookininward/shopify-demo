@@ -921,17 +921,17 @@
   },
   {
     "name": {
-      "en": "Donation"
+      "en": "Product Packaging"
     },
     "settings": [
       {
          "type": "radio",
-         "id": "donate_enabled",
+         "id": "wrapping_enabled",
          "options": [
             { "value": "yes", "label": "Yes" },
             { "value": "no", "label": "No" }
          ],
-         "label": "Add option to donate to an organization of your choice"
+         "label": "Add option to opt-in to per item packaging?"
       },
       {
         "type": "header",
@@ -940,25 +940,14 @@
         }
       },
       {
-        "type": "text",
-        "id": "donate_organization",
+        "type": "textarea",
+        "id": "wrapping_message",
         "label": {
-          "en": "Organization"
+          "en": "Add a message for your customers:"
         },
         "info": {
-          "en": "e.g. St. Michael's Hospital"
+          "en": "e.g. To lower our environmental footprint, we'll have per item packaging as an opt-in choice. Thank you for being a part of our mission!"
         }
-      },
-
-      {
-        "type": "range",
-        "id": "donate_percentage",
-        "label": {
-          "en": "Percentage of Purchase Price"
-        },
-        "default": 5,
-        "min": 0,
-        "max": 100
       }
     ]
   },
