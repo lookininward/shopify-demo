@@ -27,7 +27,7 @@ $(function() {
     $(".notifications").removeClass("has-error");
     $(".notifications").removeClass("is-loading");
     $(".notifications").html();
-  }
+  };
 
   function _notify(type, notificationText) {
     _clearErrors();
@@ -42,7 +42,7 @@ $(function() {
 
     setTimeout(function() { // clear errors after x ms
       _clearErrors();
-    }, 2200);
+    }, 2400);
   }
 
   /* -- Submit Order --------------------------------------------------------*/
@@ -62,16 +62,18 @@ $(function() {
     }
 
     // Notification - Loading
-    _notify('success', "Hang on. You'll be redirected to checkout in a moment.");
+    _notify(
+      'success',
+      "Hang on. You'll be redirected to checkout in a moment."
+    );
 
     const payloads = selectedVariants.map(variant => {
       return {
-        id: parseInt($( variant).attr( "id" )),
+        id: parseInt($(variant).attr( "id" )),
         quantity: parseInt($(variant).find( ".quantity" ).val()),
         properties: {
           engraving: $(variant).find( ".engraving" ).val(),
-          plastic: $(variant).find(".plastic")
-                                     .prop('checked') == true
+          plastic: $(variant).find(".plastic").prop('checked') == true
         }
       }
     });
