@@ -964,7 +964,7 @@
   },
   {
     "name": {
-      "en": "Custom Engraving"
+      "en": "Engraving"
     },
     "settings": [
       {
@@ -974,7 +974,23 @@
             { "value": "yes", "label": "Yes" },
             { "value": "no", "label": "No" }
          ],
-        "label": "Add option to engrave custom text on product"
+        "label": "Add option to engrave custom text on product?"
+      },
+      {
+        "type": "header",
+        "content": {
+          "en": "Settings"
+        }
+      },
+      {
+        "type": "range",
+        "id": "engraving_length",
+        "label": {
+          "en": "Maximum length of engraved text"
+        },
+        "default": 5,
+        "min": 0,
+        "max": 100
       }
     ]
   }

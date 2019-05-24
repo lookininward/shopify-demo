@@ -69,7 +69,13 @@ Customized by: Michael X
 
                   <!-- Engraving (optional) -->
                   {% if settings.engraving_enabled == 'yes' %}
-                  <td><input type="text" class="engraving"></td>
+                  <td>
+                    <input
+                      type="text"
+                      class="engraving"
+                      max="{{settings.engraving_length}}"
+                    >
+                  </td>
                   {% endif %}
 
                   <!-- Plastic Wrap (required) -->

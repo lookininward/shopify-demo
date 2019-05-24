@@ -10,16 +10,17 @@ $(function() {
     var value = parseInt($(this).val(), 10) || 0;
     if (value > max) {
       $(this).val(0);
-      _notify('error', 'We only have ' + max + ' of this item in stock.');
+      _notify('error', `We only have ${max} of this item in stock.`);
     }
   });
 
   // validate - engraving text doesn't exceed 5 char
   $('.engraving').change(function() {
     let engravingText = $(this).val();
-    if (engravingText.length > 5) {
-      $(this).val(engravingText.slice(0,5));
-      _notify('error', 'Engravings can be up to 5 characters.<br>They\'ll come out great. Promise!');
+    const max = $(this).attr('max');
+    if (engravingText.length > max) {
+      $(this).val(engravingText.slice(0, max));
+      _notify('error', `Engravings can be up to ${max} characters. They\'ll come out great. Promise!`);
     }
   });
 
