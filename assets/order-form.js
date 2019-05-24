@@ -9,7 +9,7 @@ $(function() {
     var max = parseInt($(this).attr('max'), 10);
     var value = parseInt($(this).val(), 10) || 0;
     if (value > max) {
-      $(this).val(max);
+      $(this).val(0);
       _notify('error', 'We only have ' + max + ' of this item in stock.');
     }
   });
