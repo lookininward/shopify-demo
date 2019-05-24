@@ -175,9 +175,8 @@
                 - Add option for individually wrapping products
             {% endcomment %}
 
-
             <!-- Custom Engraving (optional) -->
-            {% if settings.engraving_enabled == 'yes' %}
+            {% if settings.engraving_enabled %}
               <p class="line-item-property__field">
                 <label for="properties[Engraving]">
                   Engraving (max {{settings.engraving_length}} characters)
@@ -191,8 +190,8 @@
               </p>
             {% endif %}
 
-            <!-- Donate To SickKids (required) -->
-            {% if settings.wrapping_enabled == 'yes' %}
+            <!-- Wrapping (required) -->
+            {% if settings.wrapping_enabled %}
               <p class="line-item-property__field radio-group">
                 <label>* Wrapping:</label>
                 <label>

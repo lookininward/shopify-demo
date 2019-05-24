@@ -38,10 +38,10 @@ Customized by: Michael X
             <th>Preview</th>
             <th class="text-left">Name</th>
             <th>Price</th>
-            {% if settings.engraving_enabled == 'yes' %}
+            {% if settings.engraving_enabled %}
             <th>Engraving</th>
             {% endif %}
-            {% if settings.wrapping_enabled == 'yes' %}
+            {% if settings.wrapping_enabled %}
             <th>Wrapping *</th>
             {% endif %}
             <th>Quantity</th>
@@ -72,7 +72,7 @@ Customized by: Michael X
                   <td class="cell-centered">{{ variant.price | money }}</td>
 
                   <!-- Engraving (optional) -->
-                  {% if settings.engraving_enabled == 'yes' %}
+                  {% if settings.engraving_enabled %}
                   <td>
                     <input
                       type="text"
@@ -83,7 +83,7 @@ Customized by: Michael X
                   {% endif %}
 
                   <!-- Plastic Wrap (required) -->
-                  {% if settings.wrapping_enabled == 'yes' %}
+                  {% if settings.wrapping_enabled %}
                   <td class="wrap cell-centered">
                     <label>
                       <input

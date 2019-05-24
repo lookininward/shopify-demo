@@ -925,13 +925,10 @@
     },
     "settings": [
       {
-         "type": "radio",
+         "type": "checkbox",
          "id": "wrapping_enabled",
-         "options": [
-            { "value": "yes", "label": "Yes" },
-            { "value": "no", "label": "No" }
-         ],
-         "label": "Add option to opt-in to per item packaging?"
+         "label": "Add option to opt-in to per item packaging?",
+         "default": true
       },
       {
          "type": "paragraph",
@@ -965,13 +962,10 @@
     },
     "settings": [
       {
-         "type": "radio",
-         "id": "engraving_enabled",
-         "options": [
-            { "value": "yes", "label": "Yes" },
-            { "value": "no", "label": "No" }
-         ],
-        "label": "Add option to engrave custom text on product?"
+        "type": "checkbox",
+        "id": "engraving_enabled",
+        "label": "Add option to engrave custom text on product?",
+        "default": true
       },
       {
          "type": "paragraph",

@@ -44,7 +44,7 @@ $(function() {
     setTimeout(function() { // clear errors after x ms
       _clearErrors();
     }, 2400);
-  }
+  };
 
   /* -- Submit Order --------------------------------------------------------*/
   $("#SubmitOrder").click(function (event) {
