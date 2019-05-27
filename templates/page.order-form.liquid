@@ -1,0 +1,164 @@
+{% comment %}
+Source: https://gist.github.com/carolineschnapp/9122054
+Customized by: Michael X
+{% endcomment %}
+
+<!-- Notifications -->
+<div class="notifications"></div>
+
+{% assign collection = collections.all %}
+
+{% paginate collection.products by 100 %}
+
+<div class="container">
+
+  <!-- Header -->
+  <header class="collection-header">
+    <div class="page-width">
+      <div class="section-header text-center">
+        <h1>Bulk Order Form</h1>
+      </div>
+    </div>
+  </header>
+
+  <form class="order-form" method="post">
+
+    <!-- Page Content / Collection Description -->
+    {% if template contains 'page' and page.content.size > 0 %}
+      <div class="rte">{{ page.content }}</div>
+    {% elsif collection.description.size > 0 %}
+      <div class="rte">{{ collection.description }}</div>
+    {% endif %}
+
+    <!-- Product Table -->
+    {% if collection.products_count > 0 %}
+      <table>
+        <thead>
+          <tr>
+            <th>Preview</th>
+            <th class="text-left">Name</th>
+            <th>Price</th>
+            {% if settings.engraving_enabled %}
+            <th>Engraving</th>
+            {% endif %}
+            {% if settings.wrapping_enabled %}
+            <th>Wrapping *</th>
+            {% endif %}
+            <th>Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for product in collection.products %}
+          {% if product.available %}
+            {% for variant in product.variants %}
+              {% if variant.available %}
+                <tr id="{{ variant.id }}" class="variant-row">
+
+                  <!-- Preview -->
+                  <td class="cell-centered">
+                    <a href="{{ variant.url | collection }}">
+                      <img src="{{ variant.image | default: product.featured_image | img_url: 'small' }}" alt="{{ variant.title | escape }}" />
+                    </a>
+                  </td>
+
+                  <!-- Title -->
+                  <td>
+                    <a href="{{ variant.url | collection }}">
+                     {{ product.title }}{% unless variant.title contains 'Default' %} - {{ variant.title }}{% endunless %}{% unless variant.sku == blank %} - {{ variant.sku }}{% endunless %}
+                    </a>
+                  </td>
+
+                  <!-- Price -->
+                  <td class="cell-centered">{{ variant.price | money }}</td>
+
+                  <!-- Engraving (optional) -->
+                  {% if settings.engraving_enabled %}
+                  <td>
+                    <input
+                      type="text"
+                      class="engraving"
+                      max="{{settings.engraving_length}}"
+                    >
+                  </td>
+                  {% endif %}
+
+                  <!-- Plastic Wrap (required) -->
+                  {% if settings.wrapping_enabled %}
+                  <td class="wrap cell-centered">
+                    <label>
+                      <input
+                        type="radio"
+                        class="doWrap"
+                        name="doWrap {{variant.id}}"
+                        value="yes"
+                      >
+                      Yes
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="doWrap {{variant.id}}"
+                        value="no"
+                        checked="checked"
+                        required
+                      >
+                        No
+                    </label>
+                  </td>
+                  {% endif %}
+
+                  <!-- Quantity -->
+                  <td class="cell-centered">
+                    <input
+                      onfocus="this.select()"
+                      class="quantity text-center"
+                      min="0"
+                      {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %}
+                        max="{{ variant.inventory_quantity }}"
+                      {% endunless %}
+                      type="number"
+                      value="0"
+                      tabindex="1"
+                    />
+                  </td>
+
+                </tr>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+        </tbody>
+      </table>
+
+      {% if settings.wrapping_enabled %}
+      <p class="info info--wrapping">
+        * {{settings.wrapping_message}}
+      </p>
+      {% endif %}
+
+      <!-- Actions -->
+      <div class="order-form-actions">
+        <input
+          id="SubmitOrder"
+          type="submit"
+          value="Add to the cart"
+          class="btn btn--secondary-accent"
+        />
+      </div>
+
+    {% else %}
+      <p>There are no products in this view.</p>
+    {% endif %}
+
+  </form>
+
+</div>
+
+{% endpaginate %}
+
+<!-- Scripts ----------------------------------------------------------------->
+{% if collection.products_count > 0 %}
+{{'//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js' | script_tag}}
+{{'api.jquery.js' | shopify_asset_url | script_tag}}
+{{'order-form.js' | asset_url | script_tag}}
+{% endif %}

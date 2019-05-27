@@ -918,5 +918,79 @@
         }
       }
     ]
+  },
+  {
+    "name": {
+      "en": "Product Packaging"
+    },
+    "settings": [
+      {
+         "type": "checkbox",
+         "id": "wrapping_enabled",
+         "label": "Add option to opt-in to per item packaging?",
+         "default": true
+      },
+      {
+         "type": "paragraph",
+         "content": "When enabled, customers may opt-in for per item packaging on the product and bulk order form pages. Selected options are reflected in the cart and checkout pages."
+      },
+      {
+        "type": "header",
+        "content": {
+          "en": "Settings"
+        }
+      },
+      {
+        "type": "textarea",
+        "id": "wrapping_message",
+        "label": {
+          "en": "Add a message for your customers:"
+        },
+        "info": {
+          "en": "e.g. Please opt-in for invidividually wrapped products."
+        }
+      },
+      {
+         "type": "paragraph",
+         "content": "When enabled, your message will be displayed at the bottom of the product and bulk order form pages."
+      }
+    ]
+  },
+  {
+    "name": {
+      "en": "Custom Engraving"
+    },
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "engraving_enabled",
+        "label": "Add option to engrave custom text on product?",
+        "default": true
+      },
+      {
+         "type": "paragraph",
+         "content": "When enabled, customers may add an engraving option to a selected product on the product and bulk order form pages. Selected options are reflected in the cart and checkout pages."
+      },
+      {
+        "type": "header",
+        "content": {
+          "en": "Settings"
+        }
+      },
+      {
+        "type": "range",
+        "id": "engraving_length",
+        "label": {
+          "en": "Maximum length of engraved text"
+        },
+        "default": 5,
+        "min": 0,
+        "max": 100
+      },
+      {
+         "type": "paragraph",
+         "content": "Customers will able to add engraving text up to your maximum specified length."
+      }
+    ]
   }
 ]
